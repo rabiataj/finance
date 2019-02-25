@@ -4,24 +4,27 @@ var express = require("express"),
     functions = require('./utils/functions'),
     mongoose = require("mongoose"),
     passport = require("passport"),
-    LocalStrategy = require("passport-local");
+    LocalStrategy = require("passport-local"),
+    request   = require("request");
     //User          = require("./")
     app.set("view engine", "ejs");
 
 
 
 app.get("/Quote", function(req, res){
-   res.render("Quote.ejs")
+    request("http://dev.markitondemand.com/Api/v2/Quote",)
+   res.render("Quote.ejs");
+   //  res.send("landing page");
 });
 
-app.get("/stock-price/:symbol", function(req, res) {
-    functions.getStockPrice(req.params.symbol).then((response) => {
-        //SUCCESS
-        res.send(response)
-
-    })
-});
-
+// app.get("/stock-price/:symbol", function(req, res) {
+//     functions.getStockPrice(req.params.symbol).then((response) => {
+//         //SUCCESS
+//         res.send(response)
+//
+//     })
+// });
+//
 
 
 // app.get("/stock-price/:symbol", function(req, res) {
