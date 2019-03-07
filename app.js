@@ -8,17 +8,19 @@ var express = require("express"),
     LocalStrategy = require("passport-local"),
     request   = require("request"),
     Transaction = require("./models/transaction"),
-    Buy         = require("./models/buy"),
-    Sell        = require("./models/sell");
-    //User          = require("./")
+    db_Insert   = require("./db_functions/insert");
     app.set("view engine", "ejs");
 
-   //PASSPORT CONFIGRATION
+mongoose.connect('mongodb://localhost/test');
+
+
+//PASSPORT CONFIGRATION
    app.use(require("express-session")({
     secret : "once again",
     resave : false,
     saveUninitialized : false
 }));
+app.use(bodyParser.json({extended: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -29,7 +31,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.get("/", function(req, res) {
-   res.send("profile"); 
+   res.send("profile");
 });
 app.get("/Quote", function(req, res){
     request("http://dev.markitondemand.com/Api/v2/Quote", )
@@ -63,7 +65,7 @@ app.get("/register", function(req, res){
 });
 
 app.post("/register", function(req, res) {
-    var newUser = new User({ username:req.body.username});
+    var newUser = new User({ username:req.body.username ,balance : 10000});
     User.register(newUser, req.body.password, function( err, user){
         if (err){
             console.log(err);
@@ -73,20 +75,21 @@ app.post("/register", function(req, res) {
         });
 
     });
+    console.log(newUser)
 });
 
-
-
 //HISTORY ROUTE//
-app.get("/transaction", function(req, res){
+app.post("/transaction", function(req, res){
+    var newTransaction = Transaction({symbol: req.body.symbol, quantity: req.body.quantity});
+
     res.render("History.ejs");
 });
 
 
 //BUY ROUTE//
 
-app.get("/buy",  function(req, res){
-   res.render("Buy.ejs");
+app.post("/buy", async  function(req, res){
+   await db_Insert.buyStocks(req.body.symbol, req.body.quantity, req.body.id);
 });
 
 //SELL ROUTE//
