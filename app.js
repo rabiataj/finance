@@ -11,7 +11,8 @@ var express = require("express"),
     db_Insert   = require("./db_functions/insert");
     app.set("view engine", "ejs");
 
-mongoose.connect('mongodb://localhost/test');
+//mongoose.connect('mongodb://localhost/test');
+mongoose.connect("mongodb://rabiataj:rt123456@ds221645.mlab.com:21645/local_db");
 
 
 //PASSPORT CONFIGRATION
@@ -65,7 +66,7 @@ app.get("/register", function(req, res){
 });
 
 app.post("/register", function(req, res) {
-    var newUser = new User({ username:req.body.username ,balance : 10000});
+    var newUser = new User({ username:req.body.username, email:req.body.email ,balance : 10000});
     User.register(newUser, req.body.password, function( err, user){
         if (err){
             console.log(err);
